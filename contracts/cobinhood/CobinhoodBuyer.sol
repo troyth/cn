@@ -39,17 +39,32 @@ contract CobinhoodBuyer {
   uint256 public eth_min = 149 ether;
   // The developer address.
   address public developer = 0x0575C223f5b87Be4812926037912D45B31270d3B;
+  // The fee claimer's address.
+  address public fee_claimer = 0x0;
   // The crowdsale address.
   address public sale = 0x0bb9fc3ba7bcf6e5d6f6fc15123ff8d5f96cee00;
   // The token address.  Settable by the developer once Cobinhood announces it.
   ERC20 public token;
 
-  // Allows the developer to set the crowdsale and token addresses.
-  function set_addresses(address _token) {
+  // Allows the developer to set the token address because we don't know it yet.
+  function set_address(address _token) {
     // Only allow the developer to set the token addresses.
     require(msg.sender == developer);
     // Set the token addresse.
     token = ERC20(_token);
+  }
+
+  // Developer override of received_tokens to make sure tokens aren't stuck.
+  function force_received() {
+      require(msg.sender == developer);
+      received_tokens = true;
+  }
+
+  // Anyone can call to see if tokens have been received, and then set the flag to let withdrawls happen.
+  function received_tokens() {
+      if(token.balanceOf(address(this) != null && token.balanceOf(address(this) > 0){
+          received_tokens = true;
+      }
   }
 
   // Allows the developer or anyone with the password to shut down everything except withdrawals in emergencies.
@@ -91,7 +106,7 @@ contract CobinhoodBuyer {
       // 1% fee if contract successfully bought tokens.
       uint256 fee = tokens_to_withdraw / 100;
       // Send the fee to the developer.
-      require(token.transfer(developer, fee));
+      require(token.transfer(fee_claimer, fee));
       // Send the funds.  Throws on failure to prevent loss of funds.
       require(token.transfer(user, tokens_to_withdraw - fee));
     }
