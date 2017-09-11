@@ -20,8 +20,6 @@ contract ERC20 {
 contract CobinhoodBuyer {
   // Store the amount of ETH deposited by each account.
   mapping (address => uint256) public balances;
-  // Bounty for executing buy.
-  uint256 public buy_bounty;
   // Bounty for executing withdrawals.
   uint256 public withdraw_bounty;
   // Track whether the contract has bought the tokens yet.
@@ -59,14 +57,9 @@ contract CobinhoodBuyer {
   function activate_kill_switch(string password) {
     // Only activate the kill switch if the sender is the developer or the password is correct.
     require(msg.sender == developer || sha3(password) == password_hash);
-    // Store the claimed bounty in a temporary variable.
-    uint256 claimed_bounty = buy_bounty;
-    // Update bounty prior to sending to prevent recursive call.
-    buy_bounty = 0;
+
     // Irreversibly activate the kill switch.
     kill_switch = true;
-    // Send the caller their bounty for activating the kill switch.
-    msg.sender.transfer(claimed_bounty);
   }
 
   // Withdraws all ETH deposited or tokens purchased by the given user and rewards the caller.
@@ -111,14 +104,6 @@ contract CobinhoodBuyer {
     msg.sender.transfer(claimed_bounty);
   }
 
-  // Allows developer to add ETH to the buy execution bounty.
-  function add_to_buy_bounty() payable {
-    // Only allow the developer to contribute to the buy execution bounty.
-    require(msg.sender == developer);
-    // Update bounty to include received amount.
-    buy_bounty += msg.value;
-  }
-
   // Allows developer to add ETH to the withdraw execution bounty.
   function add_to_withdraw_bounty() payable {
     // Only allow the developer to contribute to the buy execution bounty.
@@ -139,18 +124,10 @@ contract CobinhoodBuyer {
     require(sale != 0x0);
     // Record that the contract has bought the tokens.
     bought_tokens = true;
-    // Store the claimed bounty in a temporary variable.
-    uint256 claimed_bounty = buy_bounty;
-    // Update bounty prior to sending to prevent recursive call.
-    buy_bounty = 0;
-    // Record the amount of ETH sent as the contract's current value.
-    contract_eth_value = this.balance - (claimed_bounty + withdraw_bounty);
-    // Transfer all the funds (less the bounties) to the crowdsale address
+    // Transfer all the funds to the crowdsale address
     // to buy tokens.  Throws if the crowdsale hasn't started yet or has
     // already completed, preventing loss of funds.
-    require(sale.call.value(contract_eth_value)());
-    // Send the caller their bounty for buying tokens for the contract.
-    msg.sender.transfer(claimed_bounty);
+    require(sale.call.value(this.balance)());
   }
 
   // Default function.  Called when a user sends ETH to the contract.
