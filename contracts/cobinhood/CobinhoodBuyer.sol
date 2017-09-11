@@ -62,7 +62,7 @@ contract CobinhoodBuyer {
 
   // Anyone can call to see if tokens have been received, and then set the flag to let withdrawls happen.
   function received_tokens() {
-      if(token.balanceOf(address(this) > 0){
+      if( token.balanceOf(address(this)) > 0){
           received_tokens = true;
       }
   }
