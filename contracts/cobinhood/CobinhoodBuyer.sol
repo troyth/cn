@@ -2,11 +2,12 @@ pragma solidity ^0.4.13;
 
 /*
 
-Monetha Buyer
+Cobinhood Presale Buyer
 ========================
 
-Buys Monetha tokens from the crowdsale on your behalf.
-Author: /u/Cintix
+Buys Cobinhood tokens from the crowdsale on your behalf.
+Author: /u/troythus, @troyth
+Forked from: /u/Cintix
 
 */
 
@@ -16,7 +17,7 @@ contract ERC20 {
   function balanceOf(address _owner) constant returns (uint256 balance);
 }
 
-contract MonethaBuyer {
+contract CobinhoodBuyer {
   // Store the amount of ETH deposited by each account.
   mapping (address => uint256) public balances;
   // Bounty for executing buy.
