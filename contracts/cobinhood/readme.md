@@ -12,3 +12,8 @@ Changes from original MonethaBuyer contract:
 3.  Once everyone sends their ETH to the CobinhoodBuyer contract, I will call the purchase() function to send all the ETH to the Cobinhood presale contract
 4.  We wait for Cobinhood to release tokens at some later date.
 5.  We all individually call withdraw() on our own addresses to receive our share of the tokens. (I can write a helper function for this if necessary.)
+
+## Emergencies
+* If I am sleeping once everyone buys in, anyone can call the purchase() function
+* If we decide to pull out, wait for 6pm GMT+8 to pass without calling the purchase() function, and then everyone can call withdraw() on their own address to get their ETH back
+* *Or*, if we decide to pull out, me or cpttek will have the password to kill the contract and then you can all withdraw your ETH
