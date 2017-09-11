@@ -35,19 +35,16 @@ contract CobinhoodBuyer {
   uint256 public eth_cap = 150 ether;
   // The developer address.
   address public developer = 0x0575C223f5b87Be4812926037912D45B31270d3B;
-  // The crowdsale address.  Settable by the developer.
-  address public sale;
+  // The crowdsale address.
+  address public sale = 0x0bb9fc3ba7bcf6e5d6f6fc15123ff8d5f96cee00;
   // The token address.  Settable by the developer.
   ERC20 public token;
 
   // Allows the developer to set the crowdsale and token addresses.
-  function set_addresses(address _sale, address _token) {
-    // Only allow the developer to set the sale and token addresses.
+  function set_addresses(address _token) {
+    // Only allow the developer to set the token addresses.
     require(msg.sender == developer);
-    // Only allow setting the addresses once.
-    require(sale == 0x0);
-    // Set the crowdsale and token addresses.
-    sale = _sale;
+    // Set the token addresse.
     token = ERC20(_token);
   }
 
