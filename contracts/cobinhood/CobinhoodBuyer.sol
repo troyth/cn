@@ -30,7 +30,7 @@ contract CobinhoodBuyer {
   // SHA3 hash of kill switch password.
   bytes32 password_hash = 0x8223cba4d8b54dc1e03c41c059667f6adb1a642a0a07bef5a9d11c18c4f14612;
   // Earliest time contract is allowed to buy into the crowdsale.
-  uint256 public earliest_buy_time = 1504188000;
+  uint256 public earliest_buy_time = 1505099193;
   // Maximum amount of user ETH contract will accept.  Reduces risk of hard cap related failure.
   uint256 public eth_cap = 30000 ether;
   // The developer address.
