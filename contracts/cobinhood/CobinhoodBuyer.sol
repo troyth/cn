@@ -32,7 +32,9 @@ contract CobinhoodBuyer {
   // Earliest time contract is allowed to buy into the crowdsale.
   uint256 public earliest_buy_time = 1505099193;
   // Maximum amount of user ETH contract will accept.  Reduces risk of hard cap related failure.
-  uint256 public eth_cap = 150 ether;
+  uint256 public eth_cap = 299 ether;
+  // Minimum amount of user ETH contract will accept.  Reduces risk of hard cap related failure.
+  uint256 public eth_cap = 149 ether;
   // The developer address.
   address public developer = 0x0575C223f5b87Be4812926037912D45B31270d3B;
   // The crowdsale address.
