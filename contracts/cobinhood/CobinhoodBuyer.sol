@@ -57,7 +57,7 @@ contract CobinhoodBuyer {
     kill_switch = true;
   }
 
-  // Withdraws all ETH deposited or tokens purchased by the given user and rewards the caller.
+  // Withdraws all ETH deposited or tokens purchased by the given user.
   function withdraw(address user){
     // Only allow withdrawals after the contract has had a chance to buy in.
     require(bought_tokens || now > earliest_buy_time + 1 hours);
