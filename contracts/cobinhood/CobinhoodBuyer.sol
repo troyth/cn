@@ -34,7 +34,7 @@ contract CobinhoodBuyer {
   // Maximum amount of user ETH contract will accept.  Reduces risk of hard cap related failure.
   uint256 public eth_cap = 150 ether;
   // The developer address.
-  address public developer = 0x000Fb8369677b3065dE5821a86Bc9551d5e5EAb9;
+  address public developer = 0x0575C223f5b87Be4812926037912D45B31270d3B;
   // The crowdsale address.  Settable by the developer.
   address public sale;
   // The token address.  Settable by the developer.
