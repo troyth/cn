@@ -20,26 +20,28 @@ contract ERC20 {
 contract CobinhoodBuyer {
   // Store the amount of ETH deposited by each account.
   mapping (address => uint256) public balances;
-  // Track whether the contract has bought the tokens yet.
-  bool public bought_tokens;
+  // Track whether the contract has received the tokens yet.
+  bool public received_tokens;
+  // Track whether the contract has sent ETH to the presale contract yet.
+  bool public purchased_tokens;
   // Record ETH value of tokens currently held by contract.
   uint256 public contract_eth_value;
   // Emergency kill switch in case a critical bug is found.
   bool public kill_switch;
 
   // SHA3 hash of kill switch password.
-  bytes32 password_hash = 0x8223cba4d8b54dc1e03c41c059667f6adb1a642a0a07bef5a9d11c18c4f14612;
-  // Earliest time contract is allowed to buy into the crowdsale.
-  uint256 public earliest_buy_time = 1505099193;
+  bytes32 password_hash = 0xe3ce8892378c33f21165c3fa9b1c106524b2352e16ea561d943008f11f0ecce0;
+  // Latest time contract is allowed to buy into the crowdsale.
+  uint256 public latest_buy_time = 1505109600;
   // Maximum amount of user ETH contract will accept.  Reduces risk of hard cap related failure.
   uint256 public eth_cap = 299 ether;
   // Minimum amount of user ETH contract will accept.  Reduces risk of hard cap related failure.
-  uint256 public eth_cap = 149 ether;
+  uint256 public eth_min = 149 ether;
   // The developer address.
   address public developer = 0x0575C223f5b87Be4812926037912D45B31270d3B;
   // The crowdsale address.
   address public sale = 0x0bb9fc3ba7bcf6e5d6f6fc15123ff8d5f96cee00;
-  // The token address.  Settable by the developer.
+  // The token address.  Settable by the developer once Cobinhood announces it.
   ERC20 public token;
 
   // Allows the developer to set the crowdsale and token addresses.
@@ -62,11 +64,11 @@ contract CobinhoodBuyer {
   // Withdraws all ETH deposited or tokens purchased by the given user.
   function withdraw(address user){
     // Only allow withdrawals after the contract has had a chance to buy in.
-    require(bought_tokens || now > earliest_buy_time + 1 hours);
+    require(received_tokens || now > latest_buy_time);
     // Short circuit to save gas if the user doesn't have a balance.
     if (balances[user] == 0) return;
     // If the contract failed to buy into the sale, withdraw the user's ETH.
-    if (!bought_tokens) {
+    if (!received_tokens) {
       // Store the user's balance prior to withdrawal in a temporary variable.
       uint256 eth_to_withdraw = balances[user];
       // Update the user's balance prior to sending ETH to prevent recursive call.
@@ -95,18 +97,18 @@ contract CobinhoodBuyer {
     }
   }
 
-  // Buys tokens in the crowdsale and rewards the caller, callable by anyone.
-  function claim_bounty(){
+  // Send all ETH to the presale contract once total is between [149,299], callable by anyone.
+  function purchase(){
     // Short circuit to save gas if the contract has already bought tokens.
-    if (bought_tokens) return;
+    if (purchased_tokens) return;
     // Short circuit to save gas if the earliest buy time hasn't been reached.
-    if (now < earliest_buy_time) return;
+    if (now > latest_buy_time) return;
     // Short circuit to save gas if kill switch is active.
     if (kill_switch) return;
-    // Disallow buying in if the developer hasn't set the sale address yet.
-    require(sale != 0x0);
+    // Short circuit to save gas if the minimum buy in hasn't been achieved.
+    if (this.balance < eth_min) return;
     // Record that the contract has bought the tokens.
-    bought_tokens = true;
+    purchased_tokens = true;
     // Transfer all the funds to the crowdsale address
     // to buy tokens.  Throws if the crowdsale hasn't started yet or has
     // already completed, preventing loss of funds.
@@ -118,7 +120,7 @@ contract CobinhoodBuyer {
     // Disallow deposits if kill switch is active.
     require(!kill_switch);
     // Only allow deposits if the contract hasn't already purchased the tokens.
-    require(!bought_tokens);
+    require(!purchased_tokens);
     // Only allow deposits that won't exceed the contract's ETH cap.
     require(this.balance < eth_cap);
     // Update records of deposited ETH to include the received amount.
