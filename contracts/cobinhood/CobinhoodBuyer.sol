@@ -83,7 +83,7 @@ contract CobinhoodBuyer {
     // Short circuit to save gas if the user doesn't have a balance.
     if (balances[user] == 0) return;
     // If the contract failed to buy into the sale, withdraw the user's ETH.
-    if (!received_tokens) {
+    if (!received_tokens || kill_switch) {
       // Store the user's balance prior to withdrawal in a temporary variable.
       uint256 eth_to_withdraw = balances[user];
       // Update the user's balance prior to sending ETH to prevent recursive call.
