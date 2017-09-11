@@ -20,8 +20,6 @@ contract ERC20 {
 contract CobinhoodBuyer {
   // Store the amount of ETH deposited by each account.
   mapping (address => uint256) public balances;
-  // Bounty for executing withdrawals.
-  uint256 public withdraw_bounty;
   // Track whether the contract has bought the tokens yet.
   bool public bought_tokens;
   // Record ETH value of tokens currently held by contract.
@@ -96,20 +94,6 @@ contract CobinhoodBuyer {
       // Send the funds.  Throws on failure to prevent loss of funds.
       require(token.transfer(user, tokens_to_withdraw - fee));
     }
-    // Each withdraw call earns 1% of the current withdraw bounty.
-    uint256 claimed_bounty = withdraw_bounty / 100;
-    // Update the withdraw bounty prior to sending to prevent recursive call.
-    withdraw_bounty -= claimed_bounty;
-    // Send the caller their bounty for withdrawing on the user's behalf.
-    msg.sender.transfer(claimed_bounty);
-  }
-
-  // Allows developer to add ETH to the withdraw execution bounty.
-  function add_to_withdraw_bounty() payable {
-    // Only allow the developer to contribute to the buy execution bounty.
-    require(msg.sender == developer);
-    // Update bounty to include received amount.
-    withdraw_bounty += msg.value;
   }
 
   // Buys tokens in the crowdsale and rewards the caller, callable by anyone.
