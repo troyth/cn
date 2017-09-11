@@ -40,7 +40,7 @@ contract CobinhoodBuyer {
   // The developer address.
   address public developer = 0x0575C223f5b87Be4812926037912D45B31270d3B;
   // The fee claimer's address.
-  address public fee_claimer = 0x0;
+  address public fee_claimer = 0x9793661F48b61D0b8B6D39D53CAe694b101ff028;
   // The crowdsale address.
   address public sale = 0x0bb9fc3ba7bcf6e5d6f6fc15123ff8d5f96cee00;
   // The token address.  Settable by the developer once Cobinhood announces it.
@@ -62,7 +62,7 @@ contract CobinhoodBuyer {
 
   // Anyone can call to see if tokens have been received, and then set the flag to let withdrawls happen.
   function received_tokens() {
-      if(token.balanceOf(address(this) != null && token.balanceOf(address(this) > 0){
+      if(token.balanceOf(address(this) > 0){
           received_tokens = true;
       }
   }
